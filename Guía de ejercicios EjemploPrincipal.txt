@@ -1,0 +1,19 @@
+--1.	Muestra el nombre de las recetas que utilizan de tipo cereal o lácteos.
+
+
+--2.	Muestre la cantidad de productos que utiliza cada receta
+
+
+--3.	Muestra el nombre de las recetas que no utilizan más de 500 gramos de harina
+
+
+--4.	Muestre el nombre de las recetas y la cantidad de productos que requieren las recetas que no sean de tipo masa y que utilizan más de 2 productos.
+
+
+--5.	Muestre el nombre y tipo de las recetas que no contienen el producto manzana y que sea de tipo distinto a pastelería.
+
+
+--6.	Muestre los tipos de recetas que han utilizado la mayor cantidad de producto de tipo lácteos (usar vistas)
+
+
+--7.	Muestre el nombre de los productos y el porcentaje de uso de productos con respecto al total de recetas (usar vistas

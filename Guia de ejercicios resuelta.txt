@@ -1,0 +1,59 @@
+--1.	Muestra el nombre de las recetas que utilizan de tipo cereal o lácteos.
+
+SELECT DISTINCT REC_NOMBRE FROM RECETA R, REQUIERE RE, PRODUCTO P
+WHERE R.REC_COD=RE.REC_COD AND RE.PRO_COD=P.PRO_COD AND  (P.PRO_TIPO= 'CEREAL' OR P.PRO_TIPO= 'LACTEO')
+
+--2.	Muestre la cantidad de productos que utiliza cada receta
+
+SELECT R.REC_NOMBRE, COUNT (1) --AS CANTIDAD
+FROM RECETA R, REQUIERE RE, PRODUCTO P
+WHERE R.REC_COD=RE.REC_COD AND RE.PRO_COD=P.PRO_COD
+GROUP BY R.REC_NOMBRE
+
+--3.	Muestra el nombre de las recetas que no utilizan más de 500 gramos de harina
+
+SELECT R.REC_NOMBRE
+FROM RECETA R
+WHERE NOT EXISTS (SELECT  FROM REQUIERE RE, PRODUCTO P WHERE  RE.PRO_COD=P.PRO_COD AND R.REC_COD=RE.REC_COD AND P.PRO_NOMBRE='HARINA' AND RE.REQ_CANTIDAD =600);
+
+--4.	Muestre el nombre de las recetas y la cantidad de productos que requieren las recetas que no sean de tipo masa y que utilizan más de 2 productos.
+
+SELECT REC_NOMBRE, COUNT(1) AS CANTIDAD
+FROM RECETA RE, REQUIERE RQ
+WHERE RE.REC_COD=RQ.REC_COD AND RE.REC_TIPO  'MASA'
+GROUP BY REC_NOMBRE
+HAVING COUNT(1)2
+
+--5.	Muestre el nombre y tipo de las recetas que no contienen el producto manzana y que sea de tipo distinto a pastelería.
+
+SELECT REC_NOMBRE, REC_TIPO
+FROM RECETA R
+WHERE REC_TIPO  'PASTELERIA' AND NOT EXISTS 
+	(SELECT  FROM REQUIERE RQ, PRODUCTO P WHERE P.PRO_NOMBRE='MANZANA' 
+	 AND RQ.PRO_COD=P.PRO_COD AND R.REC_COD=RQ.REC_COD)
+
+--6.	Muestre los tipos de recetas que han utilizado la mayor cantidad de producto de tipo lácteos (usar vistas)
+
+CREATE VIEW CANT_LACTEOS AS
+SELECT REC_TIPO, COUNT(1) AS CANT
+FROM RECETA RT, REQUIERE RQ, PRODUCTO P
+WHERE RT.REC_COD=RQ.REC_COD AND P.PRO_COD=RQ.PRO_COD AND P.PRO_TIPO='LACTEO'
+GROUP BY REC_TIPO;
+
+SELECT REC_TIPO
+FROM CANT_LACTEOS
+WHERE CANT= (SELECT MAX(CANT) FROM CANT_LACTEOS);
+
+--7.	Muestre el nombre de los productos y el porcentaje de uso de productos con respecto al total de recetas (usar vistas
+
+CREATE VIEW CANT_PRODUCTO AS 
+	SELECT PRO_NOMBRE, COUNT(1) AS CANT_PRO
+	FROM REQUIERE R INNER JOIN PRODUCTO P ON R.PRO_COD=P.PRO_COD
+	GROUP BY PRO_NOMBRE;
+	
+CREATE VIEW TOTAL_PRODUCTO AS
+	SELECT COUNT(1) AS TT_PRO
+	FROM REQUIERE;
+    	
+SELECT PRO_NOMBRE, CAST ( ((CANT_PRO 100)TT_PRO) AS DECIMAL(5,2) )AS PTR
+FROM CANT_PRODUCTO,TOTAL_PRODUCTO;
